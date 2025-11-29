@@ -1,5 +1,7 @@
+import { configDotenv } from 'dotenv'
 import jwt from 'jsonwebtoken'
 
+configDotenv()
 
 
 const Token = (data) => {

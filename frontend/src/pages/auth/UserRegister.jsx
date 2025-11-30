@@ -1,20 +1,26 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import AuthLayout from './AuthLayout'
+import axios from 'axios'
+import { Axioss } from '../../utils/axios'
 
 const isEmail = (s) => /\S+@\S+\.\S+/.test(s)
 const isValidPassword = (p) => p.length >= 6
 const isValidName = (n) => n.trim().length >= 2
 
 const UserRegister = () => {
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' })
+  const [form, setForm] = useState({ fullname: '', email: '', password: '' })
   const [loading, setLoading] = useState(false)
+
+  const navigate = useNavigate()
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
+
+
   const validateForm = () => {
-    if (!isValidName(form.name)) {
+    if (!isValidName(form.fullname)) {
       toast.error('Name must be at least 2 characters')
       return false
     }
@@ -24,10 +30,6 @@ const UserRegister = () => {
     }
     if (!isValidPassword(form.password)) {
       toast.error('Password must be at least 6 characters')
-      return false
-    }
-    if (form.password !== form.confirm) {
-      toast.error('Passwords do not match')
       return false
     }
     return true
@@ -40,19 +42,27 @@ const UserRegister = () => {
     setLoading(true)
     try {
       // TODO: Replace with actual API call
-      // const res = await fetch('/api/auth/user/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(form)
-      // })
-      // const data = await res.json()
+      console.log(form)
+      const res = await Axioss.post('/auth/user/register',{
+        fullname:form.fullname,
+        email:form.email,
+        password:form.password
+      },{
+        withCredentials:true
+      })
 
-      // Demo: simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      toast.success('Account created! Redirecting...')
-      // TODO: Redirect to login or dashboard
+      const data = res.data.data;
+      const message = res.data.message;
+
+
+      if(res.data.success) {
+        toast.success(message)
+        navigate('/')
+      }
+
     } catch (err) {
-      toast.error(err.message || 'Registration failed')
+      console.log(err.response.data.message)
+      toast.error(err.response.data.message || 'Registration failed')
     } finally {
       setLoading(false)
     }
@@ -69,8 +79,8 @@ const UserRegister = () => {
         <label className="field">
           <span>Full Name</span>
           <input 
-            name="name" 
-            value={form.name} 
+            name="fullname" 
+            value={form.fullname} 
             onChange={handleChange} 
             placeholder="Your fullname" 
             disabled={loading}
@@ -98,19 +108,6 @@ const UserRegister = () => {
             value={form.password} 
             onChange={handleChange} 
             placeholder="••••••••" 
-            disabled={loading}
-            required 
-          />
-        </label>
-
-        <label className="field">
-          <span>Confirm Password</span>
-          <input 
-            type="password" 
-            name="confirm" 
-            value={form.confirm} 
-            onChange={handleChange} 
-            placeholder="Repeat password" 
             disabled={loading}
             required 
           />

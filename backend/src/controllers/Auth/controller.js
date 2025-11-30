@@ -8,6 +8,8 @@ const Register = async (req, res) => {
   try {
     const { fullname, email, password } = req.body;
 
+    console.log(req.body)
+
     if (!fullname || !email || !password || !IsEmail(email)) {
       return res.status(400).json({
         message: "!Please Provide Full Data",
@@ -130,7 +132,7 @@ const FoodPartnerRegister = async (req, res) => {
 
     if (ExistingUser) {
       return res.status(400).json({
-        message: "!User Already Exist",
+        message: "!Foodpartner Already Exist",
         success: false,
       });
     }
@@ -150,7 +152,7 @@ const FoodPartnerRegister = async (req, res) => {
     });
 
     return res.cookie("token", JWT_TOKEN).status(201).json({
-      message: "User Registeration Successfull",
+      message: "Foodpartner Registeration Successfull",
       data:{
         email,
         fullname
@@ -203,7 +205,7 @@ const FoodPartnerLogin = async (req, res) => {
 
 
     return res.cookie("token", JWT_TOKEN,{httpOnly:true}).status(201).json({
-      message: "User Logged In Successfull",
+      message: "Foodpartner Logged In Successfull",
       data:{
         email,
         fullname:User.fullname

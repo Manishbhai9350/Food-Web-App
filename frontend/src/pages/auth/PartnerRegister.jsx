@@ -1,18 +1,69 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from './AuthLayout'
+import toast from 'react-hot-toast'
+import { Axioss } from '../../utils/axios'
 
 const isEmail = (s) => /\S+@\S+\.\S+/.test(s)
+const isValidPassword = (p) => p.length >= 6
+const isValidName = (n) => n.trim().length >= 2
 
 const PartnerRegister = () => {
-  const [form, setForm] = useState({ name:'', email:'', password:'', confirm:'', outlet:'' })
+   const [form, setForm] = useState({ fullname: '', email: '', password: '' })
+  const [loading, setLoading] = useState(false)
+
+  const navigate = useNavigate()
+
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
-  const handleSubmit = (e) => {
+
+
+
+  const validateForm = () => {
+    if (!isValidName(form.fullname)) {
+      toast.error('Name must be at least 2 characters')
+      return false
+    }
+    if (!isEmail(form.email)) {
+      toast.error('Enter a valid email address')
+      return false
+    }
+    if (!isValidPassword(form.password)) {
+      toast.error('Password must be at least 6 characters')
+      return false
+    }
+    return true
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!isEmail(form.email)) return alert('Enter valid email')
-    if (form.password !== form.confirm) return alert('Passwords do not match')
-    // TODO: call partner register API
-    alert('Partner registered (demo)')
+    if (!validateForm()) return
+
+    setLoading(true)
+    try {
+      
+      const res = await Axioss.post('/auth/foodpartner/register',{
+        fullname:form.fullname,
+        email:form.email,
+        password:form.password
+      },{
+        withCredentials:true
+      })
+
+      const data = res.data.data;
+      const message = res.data.message;
+
+
+      if(res.data.success) {
+        toast.success(message)
+        navigate('/')
+      }
+
+    } catch (err) {
+      console.log(err.response.data.message)
+      toast.error(err.response.data.message || 'Registration failed')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -25,7 +76,7 @@ const PartnerRegister = () => {
       <form className="auth-form" onSubmit={handleSubmit}>
         <label className="field">
           <span>Owner / Manager Name</span>
-          <input name="name" value={form.name} onChange={handleChange} placeholder="Full name" required />
+          <input name="fullname" value={form.name} onChange={handleChange} placeholder="Full name" required />
         </label>
 
         <label className="field">
@@ -41,11 +92,6 @@ const PartnerRegister = () => {
         <label className="field">
           <span>Password</span>
           <input type="password" name="password" value={form.password} onChange={handleChange} placeholder="••••••••" required />
-        </label>
-
-        <label className="field">
-          <span>Confirm</span>
-          <input type="password" name="confirm" value={form.confirm} onChange={handleChange} placeholder="Repeat password" required />
         </label>
 
         <button type="submit" className="btn primary">Create Account</button>

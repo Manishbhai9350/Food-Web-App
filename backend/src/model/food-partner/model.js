@@ -5,6 +5,14 @@ const Model = Schema({
     fullname:{
         type:String,
         required:true,
+    },
+    address:{
+        type:String,
+        required:true,
+    },
+    mobile:{
+        type:Number,
+        required:true,
         unique:true
     },
     email:{
@@ -15,6 +23,28 @@ const Model = Schema({
     password:{
         type:String,
         required:true
+    },
+    followers:{
+        type:Schema.Types.ObjectId,
+        ref:'users'
+    },
+    rating:{
+        average:{
+            type:Number,
+            default:0
+        },
+        total:{
+            type:Number,
+            default:0
+        },
+        length:{
+            type:Number,
+            default:0
+        }
+    },
+    food:{
+        type:Schema.Types.ObjectId,
+        ref:'foods'
     }
 })
 

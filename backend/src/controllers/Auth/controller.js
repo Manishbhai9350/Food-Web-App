@@ -118,12 +118,19 @@ const Logout = async (req,res) => {
 }
 const FoodPartnerRegister = async (req, res) => {
   try {
-    const { fullname, email, password } = req.body;
+    const { fullname, email, password, address, mobile } = req.body;
 
 
-    if (!fullname || !email || !password || !IsEmail(email)) {
+    if (!fullname || !email || !password || !IsEmail(email) || !address || !mobile) {
       return res.status(400).json({
         message: "!Please Provide Full Data",
+        success: false,
+      });
+    }
+    
+    if(mobile.length !== 10) {
+      return res.status(400).json({
+        message: "Invalid Mobile Number",
         success: false,
       });
     }
@@ -143,6 +150,8 @@ const FoodPartnerRegister = async (req, res) => {
       fullname,
       email,
       password: HashedPassword,
+      address,
+      mobile
     });
 
     const JWT_TOKEN = Token({

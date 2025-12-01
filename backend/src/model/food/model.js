@@ -2,7 +2,7 @@ import mongoose, { model, Schema } from 'mongoose'
 
 
 const Model = Schema({
-    name:{
+    title:{
         type:String,
         required:true,
     },
@@ -15,10 +15,14 @@ const Model = Schema({
         required:true
     },
     partner:{
-        ref:'foodpartner',
+        ref:'foodpartners',
         type:mongoose.Schema.Types.ObjectId,
         required:true,
     },
+    likes:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'users'
+    }
 })
 
 

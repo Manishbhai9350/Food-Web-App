@@ -5,7 +5,7 @@ import { RiShareForwardLine } from "react-icons/ri";
 import { BsArrowUpRight, BsCart3, BsFillSaveFill, BsSave } from "react-icons/bs";
 import { MdDeliveryDining } from "react-icons/md";
 import "../App.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Axioss } from "../utils/axios";
 import gsap from "gsap";
 
@@ -17,6 +17,8 @@ const ReelViewer = ({ reel, isActive = false, onReelScroll }) => {
   const [loading, setLoading] = useState(false)
   const videoRef = useRef(null);
   const progressRef = useRef(null)
+
+  const navigate = useNavigate()
 
   // Handle video play/pause based on active state
   useEffect(() => {
@@ -98,6 +100,9 @@ const ReelViewer = ({ reel, isActive = false, onReelScroll }) => {
       },{
         withCredentials:true
       })
+      if(res.data?.authorize) {
+        navigate('/auth/user/login')
+      }
       setLikes(prev => res.data.liked ? prev + 1 : prev - 1)
       setIsLiked(res.data.liked)
     } catch (error) {
@@ -117,7 +122,9 @@ const ReelViewer = ({ reel, isActive = false, onReelScroll }) => {
         withCredentials:true
       })
 
-      console.log(res)
+      if(res.data?.authorize) {
+        navigate('/auth/user/login')
+      }
       
       setIsSaved(res.data.saved)
     } catch (error) {

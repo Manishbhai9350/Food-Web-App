@@ -50,7 +50,7 @@ const PartnerLogin = () => {
 
       if (res.data.success) {
         toast.success(message);
-        navigate("/");
+        navigate('/food/create')
       }
     } catch (err) {
       console.log(err.response.data.message);

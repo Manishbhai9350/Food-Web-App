@@ -7,9 +7,10 @@ import { Axioss } from '../../utils/axios'
 const isEmail = (s) => /\S+@\S+\.\S+/.test(s)
 const isValidPassword = (p) => p.length >= 6
 const isValidName = (n) => n.trim().length >= 2
+const isValidMobile = (n) => (n.toString().length == 10)
 
 const PartnerRegister = () => {
-   const [form, setForm] = useState({ fullname: '', email: '', password: '' })
+  const [form, setForm] = useState({ fullname: '', email: '', password: '', address:'', mobile:0 })
   const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate()
@@ -23,12 +24,20 @@ const PartnerRegister = () => {
       toast.error('Name must be at least 2 characters')
       return false
     }
+    if (!isValidName(form.address)) {
+      toast.error('Address must be at least 2 characters')
+      return false
+    }
     if (!isEmail(form.email)) {
       toast.error('Enter a valid email address')
       return false
     }
     if (!isValidPassword(form.password)) {
       toast.error('Password must be at least 6 characters')
+      return false
+    }
+    if (!isValidMobile(form.mobile)) {
+      toast.error('Enter a valid mobile number')
       return false
     }
     return true
@@ -44,7 +53,9 @@ const PartnerRegister = () => {
       const res = await Axioss.post('/auth/foodpartner/register',{
         fullname:form.fullname,
         email:form.email,
-        password:form.password
+        password:form.password,
+        mobile:form.mobile,
+        address:form.address
       },{
         withCredentials:true
       })
@@ -55,7 +66,7 @@ const PartnerRegister = () => {
 
       if(res.data.success) {
         toast.success(message)
-        navigate('/')
+        navigate('/food/create')
       }
 
     } catch (err) {
@@ -79,19 +90,26 @@ const PartnerRegister = () => {
           <input name="fullname" value={form.name} onChange={handleChange} placeholder="Full name" required />
         </label>
 
-        <label className="field">
-          <span>Outlet Name</span>
-          <input name="outlet" value={form.outlet} onChange={handleChange} placeholder="Outlet name" required />
-        </label>
 
         <label className="field">
           <span>Business Email</span>
           <input name="email" value={form.email} onChange={handleChange} placeholder="business@outlet.com" required />
         </label>
 
+
         <label className="field">
           <span>Password</span>
           <input type="password" name="password" value={form.password} onChange={handleChange} placeholder="••••••••" required />
+        </label>
+
+        <label className="field">
+          <span>Address</span>
+          <input name="address" value={form.address} onChange={handleChange} placeholder="Address" required />
+        </label>
+
+        <label className="field">
+          <span>Mobile No.</span>
+          <input name="mobile" type='number' value={form.mobile} onChange={handleChange} placeholder="Enter Your Mobile Number" required />
         </label>
 
         <button type="submit" className="btn primary">Create Account</button>

@@ -118,6 +118,8 @@ const Logout = async (req,res) => {
 }
 const FoodPartnerRegister = async (req, res) => {
   try {
+
+    console.log(req.body)
     const { fullname, email, password, address, mobile } = req.body;
 
 

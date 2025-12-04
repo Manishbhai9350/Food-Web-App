@@ -55,31 +55,26 @@ const likeFood = async (req, res) => {
 
     const decoded = Decode(token);
     if (!decoded.id) {
-      return res
-        .status(401)
-        .json({ success: false, message: "User unauthorized" });
+      return res.status(401).json({ success: false, message: "User unauthorized" });
     }
 
     const user = await UserModel.findById(decoded.id);
     if (!user) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found" });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
     const foodReel = await FoodModel.findById(reelId);
     if (!foodReel) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Food reel not found" });
+      return res.status(404).json({ success: false, message: "Food reel not found" });
     }
 
-    // Toggle Like (Better UX)
+    // Toggle Like
     const alreadyLiked = foodReel.likes.includes(user._id);
 
     if (alreadyLiked) {
       foodReel.likes.pull(user._id);
       await foodReel.save();
+
       return res.json({
         success: true,
         message: "Unliked successfully",
@@ -95,6 +90,7 @@ const likeFood = async (req, res) => {
       message: "Liked successfully",
       liked: true,
     });
+
   } catch (err) {
     console.error(err);
     return res.status(500).json({ success: false, message: "Server error" });

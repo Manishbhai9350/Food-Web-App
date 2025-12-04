@@ -9,6 +9,7 @@ import './App.css'
 import Auth from './pages/auth/Auth'
 import Home from './pages/feed/Home'
 import FoodPartner from './pages/partner/FoodPartner'
+import CreateFood from './pages/food/createfood'
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
         <Route path="/auth/user/register" element={<UserRegister />} />
         <Route path="/auth/partner/login" element={<PartnerLogin />} />
         <Route path="/auth/partner/register" element={<PartnerRegister />} />
+        <Route path="/food/create" element={<CreateFood />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

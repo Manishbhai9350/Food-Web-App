@@ -9,6 +9,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import ReelViewer from "../../components/ReelViewer";
 import "../../App.css";
 import { Axioss } from "../../utils/axios";
+import Navbar from "../../components/Navbar";
 
 const THRESHOLD = 5;
 const WINDOW = Math.max(2, THRESHOLD * 2);
@@ -374,7 +375,9 @@ const Home = () => {
      JSX (unchanged)
   ----------------------------------------------------------- */
   return (
-    <div className="absolute-reel-root">
+    <>
+    <Navbar />
+      <div className="absolute-reel-root">
       <div ref={containerRef} className="absolute-reel-container">
         {visible.map((item) => {
           const offset = (item.globalIndex - currentIndex) * 100;
@@ -417,7 +420,7 @@ const Home = () => {
         style={{
           position: "fixed",
           top: 12,
-          right: 12,
+          left: 12,
           background: "rgba(0,0,0,0.6)",
           color: "white",
           padding: "8px 12px",
@@ -430,6 +433,7 @@ const Home = () => {
         {currentIndex + 1} / {reels.length}
       </div>
     </div>
+    </>
   );
 };
 

@@ -7,10 +7,11 @@ import { MulterStorage } from '../../utils/multer.js'
 const FoodRouter =  Router()
 
 
-FoodRouter.post('/food/create',AuthenticateFoodPartner,MulterStorage.single('video'),FoodController.food.create)
-FoodRouter.post('/food/reels',AuthenticateUser,FoodController.food.getAll)
-FoodRouter.patch('/food/like',AuthenticateUser,FoodController.food.like)
-FoodRouter.patch('/food/save',AuthenticateUser,FoodController.food.save)
+FoodRouter.post('/create',AuthenticateFoodPartner,MulterStorage.single('video'),FoodController.food.create)
+FoodRouter.post('/reels',AuthenticateUser,FoodController.food.getAll)
+FoodRouter.patch('/like',AuthenticateUser,FoodController.food.like)
+FoodRouter.patch('/save',AuthenticateUser,FoodController.food.save)
+
 
 
 

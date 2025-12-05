@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import AuthLayout from './AuthLayout'
 import toast from 'react-hot-toast'
 import { Axioss } from '../../utils/axios'
+import { useDispatch } from 'react-redux'
+import { login, register } from '../../redux/slices/Partner.slice'
 
 const isEmail = (s) => /\S+@\S+\.\S+/.test(s)
 const isValidPassword = (p) => p.length >= 6
@@ -14,6 +16,7 @@ const PartnerRegister = () => {
   const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
@@ -65,6 +68,10 @@ const PartnerRegister = () => {
 
 
       if(res.data.success) {
+        dispatch(register({
+          email:data.email,
+          fullname:data.fullname
+        }))
         toast.success(message)
         navigate('/food/create')
       }

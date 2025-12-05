@@ -55,25 +55,33 @@ const likeFood = async (req, res) => {
 
     const decoded = Decode(token);
     if (!decoded.id) {
-      return res.status(401).json({ success: false, message: "User unauthorized" });
+      return res
+        .status(401)
+        .json({ success: false, message: "User unauthorized" });
     }
 
     const user = await UserModel.findById(decoded.id);
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     const foodReel = await FoodModel.findById(reelId);
     if (!foodReel) {
-      return res.status(404).json({ success: false, message: "Food reel not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Food reel not found" });
     }
 
     // Toggle Like
     const alreadyLiked = foodReel.likes.includes(user._id);
 
     if (alreadyLiked) {
+      user.liked.pull(foodReel._id);
       foodReel.likes.pull(user._id);
       await foodReel.save();
+      await user.save();
 
       return res.json({
         success: true,
@@ -83,14 +91,15 @@ const likeFood = async (req, res) => {
     }
 
     foodReel.likes.push(user._id);
+    user.liked.push(foodReel._id);
     await foodReel.save();
+    await user.save();
 
     return res.json({
       success: true,
       message: "Liked successfully",
       liked: true,
     });
-
   } catch (err) {
     console.error(err);
     return res.status(500).json({ success: false, message: "Server error" });
@@ -152,13 +161,11 @@ const saveFood = async (req, res) => {
       message: "Saved successfully",
       saved: true,
     });
-
   } catch (err) {
     console.error(err);
     return res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
 
 const GetReels = async (req, res) => {
   try {
@@ -203,14 +210,16 @@ const GetReels = async (req, res) => {
       const hasLiked = userId
         ? reel.likes?.some((id) => id.toString() === userId.toString())
         : false;
-      
-      const hasSaved = user.saved.some(id => id.toString() === reel._id.toString())
+
+      const hasSaved = user.saved.some(
+        (id) => id.toString() === reel._id.toString()
+      );
 
       return {
         ...reel._doc,
         hasLiked,
         hasSaved,
-        like:reel.likes?.length || 0,
+        like: reel.likes?.length || 0,
       };
     });
 
@@ -218,21 +227,17 @@ const GetReels = async (req, res) => {
       success: true,
       reels: finalReels,
     });
-
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Server error" });
   }
 };
 
-
-
-
 export default {
   food: {
     create: createFood,
     like: likeFood,
     getAll: GetReels,
-    save:saveFood
+    save: saveFood,
   },
 };

@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import AuthLayout from "./AuthLayout";
 import { Axioss } from "../../utils/axios";
+import { useDispatch } from "react-redux";
+import { login } from '../../redux/slices/User.slice'
 
 const isEmail = (s) => /\S+@\S+\.\S+/.test(s);
 
@@ -11,6 +13,9 @@ const UserLogin = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate()
+
+  const dispatch = useDispatch()
+  
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -49,6 +54,10 @@ const UserLogin = () => {
       const message = res.data.message;
 
       if (res.data.success) {
+        dispatch(login({
+          email:data.email,
+          fullname:data.fullname 
+        }))
         toast.success(message);
         navigate('/')
       }

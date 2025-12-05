@@ -1,28 +1,34 @@
-import mongoose, { model, Schema } from 'mongoose'
-
+import mongoose, { model, Schema } from "mongoose";
 
 const Model = Schema({
-    fullname:{
-        type:String,
-        required:true,
-        unique:true
+  fullname: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  saved: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "foods",
     },
-    email:{
-        type:String,
-        required:true,
-        unique:true
+  ],
+  liked: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "foods",
     },
-    password:{
-        type:String,
-        required:true
-    },
-    saved:[{
-        type:Schema.Types.ObjectId,
-        ref:'foods'
-    }]
-})
+  ],
+});
 
+const UserModel = model("user", Model);
 
-const UserModel =  model('user',Model)
-
-export {UserModel}
+export { UserModel };

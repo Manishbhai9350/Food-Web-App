@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import AuthLayout from "./AuthLayout";
 import { Axioss } from "../../utils/axios";
+import { login } from '../../redux/slices/Partner.slice'
+import { useDispatch } from "react-redux";
+
 
 const isEmail = (s) => /\S+@\S+\.\S+/.test(s);
 
@@ -11,6 +14,7 @@ const PartnerLogin = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -49,6 +53,10 @@ const PartnerLogin = () => {
       const message = res.data.message;
 
       if (res.data.success) {
+        dispatch(login({
+          email:data.email,
+          fullname:data.fullname
+        }))
         toast.success(message);
         navigate('/food/create')
       }
